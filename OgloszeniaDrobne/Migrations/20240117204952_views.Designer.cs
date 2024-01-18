@@ -11,8 +11,8 @@ using OgloszeniaDrobne;
 namespace OgloszeniaDrobne.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20240108134937_test1")]
-    partial class test1
+    [Migration("20240117204952_views")]
+    partial class views
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,7 @@ namespace OgloszeniaDrobne.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -97,9 +98,11 @@ namespace OgloszeniaDrobne.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderKey")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderDisplayName")
@@ -119,9 +122,11 @@ namespace OgloszeniaDrobne.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("RoleId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("UserId", "RoleId");
@@ -134,12 +139,15 @@ namespace OgloszeniaDrobne.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("LoginProvider")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Value")
@@ -148,6 +156,50 @@ namespace OgloszeniaDrobne.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("OgloszeniaDrobne.Models.AdminAnnoucments", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdminAnnoucments");
+                });
+
+            modelBuilder.Entity("OgloszeniaDrobne.Models.AnnoucmentCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnnouncementId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnnouncementId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("AnnoucmentCategory");
                 });
 
             modelBuilder.Entity("OgloszeniaDrobne.Models.Announcement", b =>
@@ -174,6 +226,9 @@ namespace OgloszeniaDrobne.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -183,11 +238,15 @@ namespace OgloszeniaDrobne.Migrations
 
             modelBuilder.Entity("OgloszeniaDrobne.Models.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Parent")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -196,9 +255,69 @@ namespace OgloszeniaDrobne.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("OgloszeniaDrobne.Models.ForbiddenWords", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ForbiddenWords");
+                });
+
+            modelBuilder.Entity("OgloszeniaDrobne.Models.HtmlTags", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAllowed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HtmlTags");
+                });
+
+            modelBuilder.Entity("OgloszeniaDrobne.Models.ReportedAnnoucment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnnouncementId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnnouncementId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReportedAnnoucments");
+                });
+
             modelBuilder.Entity("OgloszeniaDrobne.Models.UserModel", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
                     b.Property<int>("AccessFailedCount")
@@ -311,6 +430,25 @@ namespace OgloszeniaDrobne.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OgloszeniaDrobne.Models.AnnoucmentCategory", b =>
+                {
+                    b.HasOne("OgloszeniaDrobne.Models.Announcement", "Announcement")
+                        .WithMany()
+                        .HasForeignKey("AnnouncementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OgloszeniaDrobne.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Announcement");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("OgloszeniaDrobne.Models.Announcement", b =>
                 {
                     b.HasOne("OgloszeniaDrobne.Models.UserModel", "User")
@@ -320,6 +458,25 @@ namespace OgloszeniaDrobne.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OgloszeniaDrobne.Models.ReportedAnnoucment", b =>
+                {
+                    b.HasOne("OgloszeniaDrobne.Models.Announcement", "Announcement")
+                        .WithMany()
+                        .HasForeignKey("AnnouncementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OgloszeniaDrobne.Models.UserModel", "UserModel")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Announcement");
+
+                    b.Navigation("UserModel");
                 });
 #pragma warning restore 612, 618
         }

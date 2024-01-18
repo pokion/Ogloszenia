@@ -155,6 +155,28 @@ namespace OgloszeniaDrobne.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("OgloszeniaDrobne.Models.AdminAnnoucments", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdminAnnoucments");
+                });
+
             modelBuilder.Entity("OgloszeniaDrobne.Models.AnnoucmentCategory", b =>
                 {
                     b.Property<int>("Id")
@@ -201,6 +223,9 @@ namespace OgloszeniaDrobne.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -240,6 +265,24 @@ namespace OgloszeniaDrobne.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ForbiddenWords");
+                });
+
+            modelBuilder.Entity("OgloszeniaDrobne.Models.HtmlTags", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAllowed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HtmlTags");
                 });
 
             modelBuilder.Entity("OgloszeniaDrobne.Models.ReportedAnnoucment", b =>

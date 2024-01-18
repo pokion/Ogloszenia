@@ -17,5 +17,6 @@ namespace OgloszeniaDrobne.Models
         [ForeignKey(nameof(UserId))]
         public virtual UserModel User { get; set; }
         public string UserId { get; set; }
+        public int Views { get; set; } = 0;
     }
 }

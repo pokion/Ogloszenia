@@ -16,13 +16,15 @@ namespace OgloszeniaDrobne.Controllers
         private readonly IAnnoucmentsService _annoucmentsService;
         private readonly ICategoryService _categoryService;
         private readonly IForbiddenWordsService _forbiddenWordsService;
+        private readonly IHtmlTagsService _htmlTags;
 
-        public AnnouncementsController(DBContext context, IAnnoucmentsService annoucmentsService, ICategoryService categoryService, IForbiddenWordsService forbiddenWordsService)
+        public AnnouncementsController(DBContext context, IAnnoucmentsService annoucmentsService, ICategoryService categoryService, IForbiddenWordsService forbiddenWordsService, IHtmlTagsService htmlTags)
         {
             _context = context;
             _annoucmentsService = annoucmentsService;
             _categoryService = categoryService;
             _forbiddenWordsService = forbiddenWordsService;
+            _htmlTags = htmlTags;
         }
 
         // GET: Announcements
@@ -31,10 +33,14 @@ namespace OgloszeniaDrobne.Controllers
         {
             return View(await _context.Announcements.ToListAsync());
         }
-        public async Task<IActionResult> AnnoucmentsPagination([FromRoute] int? id)
+        public async Task<IActionResult> AnnoucmentsPagination(int? page, string? search)
         {
-            int pageProtect = id ?? 0;
-            var annoucments = _annoucmentsService.GetPagin(pageProtect);
+            var pagin = new PaginAnnoucmentModel()
+            {
+                Page = page ?? 0,
+                SearchString = search ?? string.Empty
+            };
+            var annoucments = _annoucmentsService.GetPagin(pagin);
             return View(annoucments);
         }
 
@@ -52,6 +58,10 @@ namespace OgloszeniaDrobne.Controllers
             {
                 return NotFound();
             }
+
+            announcement.Views = announcement.Views + 1;
+            _context.Announcements.Update(announcement);
+            await _context.SaveChangesAsync();
 
             return View(announcement);
         }
@@ -76,7 +86,14 @@ namespace OgloszeniaDrobne.Controllers
         public async Task<IActionResult> Create(Announcement announcement, string[] categoryId)
         {
             var forbiddenWords = _forbiddenWordsService.GetAllForbiddenWordsInString(announcement.Description);
-            if(forbiddenWords.Count > 0)
+            var forbiddenTags = _htmlTags.GetListOfForbiddenTags(announcement.Description);
+            if (forbiddenTags.Count > 0)
+            {
+                var result = String.Join(", ", forbiddenTags.ToArray());
+                TempData["Errors"] = "Nie możesz używać tych tagów html: " + result;
+                return RedirectToAction("Create", "Announcements");
+            }
+            if (forbiddenWords.Count > 0)
             {
                 var result = String.Join(", ", forbiddenWords.ToArray());
                 TempData["Errors"] = "Nie możesz używać tych wyrazów: " + result;
@@ -87,7 +104,7 @@ namespace OgloszeniaDrobne.Controllers
             _context.Add(announcement);
             await _context.SaveChangesAsync();
             _categoryService.LinkCategoriesToAnnounments(announcement.Id, categoryId);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Announcements", new {id = announcement.Id });
         }
 
         // GET: Announcements/Edit/5
@@ -109,6 +126,10 @@ namespace OgloszeniaDrobne.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            if (TempData["Errors"] != null)
+            {
+                ModelState.AddModelError("ForbiddenWords", TempData["Errors"] as string);
+            }
             return View(announcement);
         }
 
@@ -119,6 +140,20 @@ namespace OgloszeniaDrobne.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(Announcement announcement)
         {
+            var forbiddenWords = _forbiddenWordsService.GetAllForbiddenWordsInString(announcement.Description);
+            var forbiddenTags = _htmlTags.GetListOfForbiddenTags(announcement.Description);
+            if (forbiddenTags.Count > 0)
+            {
+                var result = String.Join(", ", forbiddenTags.ToArray());
+                TempData["Errors"] = "Nie możesz używać tych tagów html: " + result;
+                return RedirectToAction("Edit", "Announcements");
+            }
+            if (forbiddenWords.Count > 0)
+            {
+                var result = String.Join(", ", forbiddenWords.ToArray());
+                TempData["Errors"] = "Nie możesz używać tych wyrazów: " + result;
+                return RedirectToAction("Edit", "Announcements");
+            }
             announcement.UpdateDate = DateTime.Now;
             _context.Update(announcement);
             await _context.SaveChangesAsync();
@@ -140,7 +175,6 @@ namespace OgloszeniaDrobne.Controllers
             {
                 return NotFound();
             }
-
             return View(announcement);
         }
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OgloszeniaDrobne.Models;
+using OgloszeniaDrobne.Services.Interfaces;
 using System.Diagnostics;
 
 namespace OgloszeniaDrobne.Controllers
@@ -7,15 +8,17 @@ namespace OgloszeniaDrobne.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IAdminAnnoucmentsService _adminAnnoucments;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IAdminAnnoucmentsService adminAnnoucments)
         {
             _logger = logger;
+            _adminAnnoucments = adminAnnoucments;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(_adminAnnoucments.GetAll());
         }
 
         public IActionResult Privacy()

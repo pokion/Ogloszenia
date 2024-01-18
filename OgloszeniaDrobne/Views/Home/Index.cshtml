@@ -1,8 +1,18 @@
-﻿@{
+﻿@model IEnumerable<OgloszeniaDrobne.Models.AdminAnnoucments>
+@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Wiadomości od Administratora</h1>
+@foreach (var annoucment in Model)
+{
+    <div class="row">
+        <div class="row">
+            <div class="col-1">
+                @annoucment.Title
+            </div>
+        </div>
+        <div class="row">
+            @annoucment.Description
+        </div>
+    </div>
+}

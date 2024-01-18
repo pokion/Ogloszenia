@@ -15,6 +15,8 @@ namespace OgloszeniaDrobne
         public DbSet<AnnoucmentCategory> AnnoucmentCategory { get; set; }
         public DbSet<ForbiddenWords> ForbiddenWords { get; set; }
         public DbSet<ReportedAnnoucment> ReportedAnnoucments { get; set; }
+        public DbSet<HtmlTags> HtmlTags { get; set; }
+        public DbSet<AdminAnnoucments> AdminAnnoucments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

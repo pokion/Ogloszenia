@@ -11,13 +11,20 @@ namespace OgloszeniaDrobne.Controllers
         private readonly ICategoryService _category;
         private readonly IForbiddenWordsService _forbiddenWords;
         private readonly IReportedAnnoucment _reportedA;
+        private readonly IHtmlTagsService _htmlTags;
+        private readonly IAdminAnnoucmentsService _adminAnnoucments;
 
-        public AdminController(ICategoryService category, IForbiddenWordsService forbiddenWords, IReportedAnnoucment reportedA)
+        public AdminController(ICategoryService category,
+            IForbiddenWordsService forbiddenWords, 
+            IReportedAnnoucment reportedA, 
+            IHtmlTagsService htmlTags, 
+            IAdminAnnoucmentsService adminAnnoucments)
         {
             _category = category;
             _forbiddenWords = forbiddenWords;
             _reportedA = reportedA;
-
+            _htmlTags = htmlTags;
+            _adminAnnoucments = adminAnnoucments;
         }
         [Authorize(Roles = "Admin")]
         public IActionResult Index()
@@ -42,6 +49,16 @@ namespace OgloszeniaDrobne.Controllers
         {
             ViewData["ReportedAnnoucments"] = _reportedA.GetAll();
             return View();
+        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult HtmlTags()
+        {
+            return View(_htmlTags.GetAll());
+        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminAnnoucments()
+        {
+            return View(_adminAnnoucments.GetAll());
         }
 
     }
