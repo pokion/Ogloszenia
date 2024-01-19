@@ -103,7 +103,7 @@ namespace OgloszeniaDrobne.Controllers
             announcement.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             _context.Add(announcement);
             await _context.SaveChangesAsync();
-            _categoryService.LinkCategoriesToAnnounments(announcement.Id, categoryId);
+            await _categoryService.LinkCategoriesToAnnounments(announcement.Id, categoryId);
             return RedirectToAction("Details", "Announcements", new {id = announcement.Id });
         }
 

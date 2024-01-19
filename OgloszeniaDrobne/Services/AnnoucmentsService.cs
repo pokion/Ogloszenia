@@ -28,13 +28,13 @@ namespace OgloszeniaDrobne.Services
                 var parseText = ParseSearchText(paginModel.SearchString);
                 var whereClausule = TryToFindRecord(parseText);
                 paginModel.Data = _context.Announcements.FromSqlRaw($"SELECT * FROM `announcements` {whereClausule} ORDER BY CreateDate DESC").Skip(paginModel.Size * paginModel.Page).Take(paginModel.Size).ToList();
-                paginModel.Page = paginModel.Page + 1;
-                paginModel.Total = _context.Announcements.Count() / 10;
+                paginModel.Page = paginModel.Page;
+                paginModel.Total = _context.Announcements.ToList().Count() / paginModel.Size;
                 return paginModel;
             }
             paginModel.Data = _context.Announcements.FromSql($"SELECT * FROM `announcements` ORDER BY CreateDate DESC").Skip(paginModel.Size * paginModel.Page).Take(paginModel.Size).ToList();
-            paginModel.Page = paginModel.Page + 1;
-            paginModel.Total = _context.Announcements.Count() / 10;
+            paginModel.Page = paginModel.Page;
+            paginModel.Total = _context.Announcements.ToList().Count() / paginModel.Size;
             return paginModel;
         }
         public List<IAnnoucmentsService.SearchModel> ParseSearchText(string text)

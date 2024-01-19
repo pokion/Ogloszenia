@@ -7,6 +7,6 @@ namespace OgloszeniaDrobne.Services.Interfaces
         List<CategoryChilds> GetSortedCategories();
         Category GetCategoryById(int id);
         Category Create(Category category);
-        void LinkCategoriesToAnnounments(int annoucmentId, string[] categoriesIds);
+        Task<int> LinkCategoriesToAnnounments(int annoucmentId, string[] categoriesIds);
     }
 }

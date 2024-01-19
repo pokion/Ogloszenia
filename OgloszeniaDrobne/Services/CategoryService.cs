@@ -35,7 +35,7 @@ namespace OgloszeniaDrobne.Services
             _context.SaveChanges();
             return category;
         }
-        public async void LinkCategoriesToAnnounments(int annoucmentId, string[] categoriesIds)
+        public async Task<int> LinkCategoriesToAnnounments(int annoucmentId, string[] categoriesIds)
         {
             foreach (var category in categoriesIds)
             {
@@ -44,7 +44,7 @@ namespace OgloszeniaDrobne.Services
                 AnnoucmentCategory.CategoryId = category;
                 _context.AnnoucmentCategory.Add(AnnoucmentCategory);
             }
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         private List<CategoryChilds> ChangeCategoryToCategoryChilds(List<Category> categories)
         {

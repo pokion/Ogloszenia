@@ -20,7 +20,7 @@
     </div>
 </form>
 
-<div class="row gy-5">
+<div class="row gy-5 mt-2">
 @foreach (var annoucment in Model.Data)
 {
     var desc = new HtmlString(annoucment.Description);
@@ -41,28 +41,44 @@
         </div>
     
 }
-    </div>
+</div>
 <nav aria-label="Page navigation example" class="m-lg-5">
     <ul class="pagination m-3">
         <li class="page-item @(Model.Page == 0? "disabled" : "")">
-            <a class="page-link" asp-controller="Announcements" asp-action="AnnoucmentsPagination" asp-route-id="@previous" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
+            <a class="page-link" onclick="clickPage('prev')">&laquo;</a>
+            <form class="page-link d-none" asp-controller="Announcements" asp-action="AnnoucmentsPagination">
+                <input class="d-none" name="search" value="@Model.SearchString">
+                <input class="d-none" name="page" value="@(Model.Page - 1)">
+                <button type="submit" id="page_prev" class="">&laquo;</button>
+            </form>
         </li>
         @for(var pageCount=0;pageCount<=Model.Total;pageCount++)
         {
-            var pageDisplay = pageCount + 1;
-            <li class="page-item"><a class="page-link" asp-controller="Announcements" asp-action="AnnoucmentsPagination" asp-route-id="@pageCount">@pageDisplay</a></li>
+            var pageDisplay = pageCount+1;
+            <li class="page-item @(Model.Page == pageCount? "disabled" : "")">
+                <a class="page-link" onclick="clickPage('@pageCount')">@pageDisplay</a>
+                <form class="page-link d-none" asp-controller="Announcements" asp-action="AnnoucmentsPagination">
+                    <input class="d-none" name="search" value="@Model.SearchString">
+                    <input class="d-none" name="page" value="@pageCount">
+                    <button type="submit" id="page_@pageCount" class="">@pageDisplay</button>
+                </form>
+             </li>
         }
         <li class="page-item @(Model.Page == Model.Total? "disabled" : "")">
-            <a class="page-link" asp-controller="Announcements" asp-action="AnnoucmentsPagination" asp-route-id="@next" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
+            <a class="page-link" onclick="clickPage('next')">&raquo;</a>
+            <form class="page-link d-none" asp-controller="Announcements" asp-action="AnnoucmentsPagination">
+                <input class="d-none" name="search" value="@Model.SearchString">
+                <input class="d-none" name="page" value="@(Model.Page + 1)">
+                <button type="submit" id="page_next" class="">&raquo;</button>
+            </form>
         </li>
     </ul>
 </nav>
 
 <script type="text/javascript" on-content-loaded="true">
+    function clickPage(id) {
+        document.querySelector('#page_' + id).click();
+    }
     document.querySelectorAll('div.goToDetails').forEach(element => {
         element.onclick = (e) => {
             e.preventDefault();

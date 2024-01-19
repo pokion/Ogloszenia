@@ -8,6 +8,9 @@
     <div class="col"> 
         <h1>@Model.Title</h1> 
     </div>
+    <div class="col">
+        <h1><a asp-area="" asp-controller="ReportedAnnoucments" asp-action="Index" asp-route-id="@Model.Id" class="btn btn-danger">Zgłoś</a></h1>
+    </div>
 </div>
 <div class="row">
     <div class="col">

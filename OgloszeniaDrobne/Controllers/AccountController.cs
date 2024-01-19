@@ -31,7 +31,7 @@ namespace OgloszeniaDrobne.Controllers
         {
             if(User.FindFirstValue(ClaimTypes.Role) == "Admin")
             {
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Category", "Admin");
             }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userAnnoucments = _context.Announcements.Where(A => A.UserId.Contains(userId));
