@@ -42,8 +42,8 @@
     
 }
     </div>
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
+<nav aria-label="Page navigation example" class="m-lg-5">
+    <ul class="pagination m-3">
         <li class="page-item @(Model.Page == 0? "disabled" : "")">
             <a class="page-link" asp-controller="Announcements" asp-action="AnnoucmentsPagination" asp-route-id="@previous" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>

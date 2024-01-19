@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using OgloszeniaDrobne;
 using OgloszeniaDrobne.Models;
 using OgloszeniaDrobne.Services;
 using OgloszeniaDrobne.Services.Interfaces;
+using System.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,5 +102,6 @@ using (var scope = app.Services.CreateScope())
         await userManager.AddToRoleAsync(user, "Admin");
     }
 }
+
 
 app.Run();
